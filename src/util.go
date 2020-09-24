@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"os"
 
+	"github.com/cheggaaa/pb/v3"
 	"github.com/inconshreveable/go-update"
 )
 
@@ -25,8 +26,16 @@ func DownloadFile(filepath string, url string) error {
 	}
 	defer out.Close()
 
+	// start new bar
+	bar := pb.Full.Start64(resp.ContentLength)
+	// create proxy reader
+	barReader := bar.NewProxyReader(resp.Body)
+
 	// Write the body to file
-	_, err = io.Copy(out, resp.Body)
+	_, err = io.Copy(out, barReader)
+
+	bar.Finish()
+
 	return err
 }
 

@@ -62,11 +62,15 @@ func main() {
 	tempDir := os.TempDir()
 	tempMod := filepath.Join(tempDir, "civ5-mod.zip")
 	tempMap := filepath.Join(tempDir, "civ5-map.zip")
+	fmt.Println("Downloading: " + links.Mod)
 	DownloadFile(tempMod, links.Mod)
+	fmt.Println("Downloading: " + links.Map)
 	DownloadFile(tempMap, links.Map)
 
 	//unzip them to civ folder
+	fmt.Println("Unzipping mod to: " + civDlcPath)
 	archiver.Unarchive(tempMod, civDlcPath)
+	fmt.Println("Unzipping map to: " + civMapsPath)
 	archiver.Unarchive(tempMap, civMapsPath)
 
 }
