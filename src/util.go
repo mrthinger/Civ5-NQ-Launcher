@@ -27,3 +27,14 @@ func DownloadFile(filepath string, url string) error {
 	_, err = io.Copy(out, resp.Body)
 	return err
 }
+
+//GetEnv get env variable with backup
+func GetEnv(env, backup string) string {
+
+	if v, exists := os.LookupEnv(env); exists {
+		return v
+	}
+
+	return backup
+
+}
