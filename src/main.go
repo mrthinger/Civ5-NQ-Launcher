@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"strconv"
 
 	"github.com/mholt/archiver/v3"
 )
@@ -16,6 +17,8 @@ func main() {
 	serverPtr := flag.Bool("server", false, "Starts executable in server mode")
 	civPathPtr := flag.String("dir", DefaultCivDirectory, "Specifiy nonstandard civ folder (default is: "+DefaultCivDirectory+")")
 	flag.Parse()
+
+	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(CLIBuildNumber))
 
 	if *serverPtr {
 		fmt.Println("Server Mode Enabled")
