@@ -33,7 +33,7 @@ func main() {
 	validateFolderExists(civMapsPath)
 
 	//Delete the old files if they exist (using a regex)
-	deleteFiles(filepath.Join(civMapsPath, "[Ll]ek*"))
+	deleteFiles(filepath.Join(civMapsPath, "[Ll][Ee][Kk]*"))
 	deleteFiles(filepath.Join(civDlcPath, "[Ll][Ee][Kk]*"))
 
 	//get new file links from server (and parse them)
