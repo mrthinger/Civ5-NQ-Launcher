@@ -1,14 +1,15 @@
 package main
 
 import (
+	"encoding/json"
 	"flag"
 	"fmt"
-	"log"
+	"io/ioutil"
 	"net/http"
 	"os"
 	"path/filepath"
 
-	"github.com/PuerkitoBio/goquery"
+	"github.com/mholt/archiver/v3"
 )
 
 func main() {
@@ -27,24 +28,51 @@ func main() {
 	civBasePath := filepath.Clean(*civPathPtr)
 	civDlcPath := filepath.Join(civBasePath, "Assets", "DLC")
 	civMapsPath := filepath.Join(civBasePath, "Assets", "Maps")
-	fmt.Println(civBasePath)
 
 	validateFolderExists(civDlcPath)
 	validateFolderExists(civMapsPath)
+	fmt.Println("Valid Civ5 path found: " + civBasePath)
 
 	//Delete the old files if they exist (using a regex)
 	deleteFiles(filepath.Join(civMapsPath, "[Ll][Ee][Kk]*"))
 	deleteFiles(filepath.Join(civDlcPath, "[Ll][Ee][Kk]*"))
 
 	//get new file links from server (and parse them)
+	links := getFileLinks(DefaultCurrentLinksEndpoint)
 
 	//download them to cache/temp folder
+	tempDir := os.TempDir()
+	tempMod := filepath.Join(tempDir, "civ5-mod.zip")
+	tempMap := filepath.Join(tempDir, "civ5-map.zip")
+	DownloadFile(tempMod, links.Mod)
+	DownloadFile(tempMap, links.Map)
+
 	//unzip them to civ folder
+	archiver.Unarchive(tempMod, civDlcPath)
+	archiver.Unarchive(tempMap, civMapsPath)
 
 }
 
 //https://civ5-nq-launcher.herokuapp.com/currentLinks
-func getFileLinks(endpoint string) (mapLink, modLink string) {
+func getFileLinks(currentLinksEndpoint string) (links CurrentLinks) {
+
+	// Make HTTP request
+	res, err := http.Get(currentLinksEndpoint)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	e := json.Unmarshal(body, &links)
+	if e != nil {
+		panic(err.Error())
+	}
+
 	return
 }
 
@@ -67,29 +95,4 @@ func validateFolderExists(path string) {
 	} else if !val.IsDir() {
 		panic("Found file where expected folder, why the heck is a file @ " + path)
 	}
-}
-
-func getFile() {
-	// Make HTTP request
-	response, err := http.Get("https://drive.google.com/uc?export=download&id=16I9i3atnDlJ3J8D8EPTQsg7p5__3luTS")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer response.Body.Close()
-
-	// Create a goquery document from the HTTP response
-	document, err := goquery.NewDocumentFromReader(response.Body)
-	if err != nil {
-		log.Fatal("Error loading HTTP response body. ", err)
-	}
-
-	// Find and print image URLs
-	document.Find("a#uc-download-link").Each(func(index int, element *goquery.Selection) {
-		href, exists := element.Attr("href")
-		if exists {
-			link := "https://drive.google.com/u/0" + href
-			DownloadFile("zipfile.zip", link)
-			fmt.Println()
-		}
-	})
 }
