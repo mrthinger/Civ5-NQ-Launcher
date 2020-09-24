@@ -1,8 +1,6 @@
 package main
 
 import (
-	"strconv"
-
 	"github.com/gin-gonic/gin"
 )
 
@@ -26,7 +24,7 @@ func StartServer() {
 	r.GET("/selfUpdate", func(c *gin.Context) {
 		c.JSON(200, BuildInfo{
 			Version:     CLIBuildNumber,
-			DownloadURL: "https://storage.googleapis.com/civ5-mods/nqlauncher/NQLauncher-" + strconv.Itoa(CLIBuildNumber) + ".exe",
+			DownloadURL: "https://storage.googleapis.com/civ5-mods/nqlauncher/NQLauncher.exe",
 		})
 	})
 
