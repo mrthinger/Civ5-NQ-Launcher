@@ -33,7 +33,8 @@ func main() {
 	validateFolderExists(civMapsPath)
 
 	//Delete the old files if they exist (using a regex)
-	deleteFiles(filepath.Join(civMapsPath, "*[Ll]ek"))
+	deleteFiles(filepath.Join(civMapsPath, "[Ll]ek*"))
+	deleteFiles(filepath.Join(civDlcPath, "[Ll][Ee][Kk]*"))
 
 	//get new file links from server (and parse them)
 
@@ -52,7 +53,12 @@ func unzip(zipPath, extractToPath string) {
 }
 
 func deleteFiles(glob string) {
-
+	if matches, err := filepath.Glob(glob); err == nil {
+		for _, match := range matches {
+			fmt.Println("Deleting: " + match)
+			os.RemoveAll(match)
+		}
+	}
 }
 
 func validateFolderExists(path string) {
