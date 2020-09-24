@@ -7,6 +7,7 @@ import (
 	"io/ioutil"
 	"net/http"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strconv"
 
@@ -29,7 +30,15 @@ func main() {
 	//self update
 	latestBuildInfo := getSelfUpdateInfo(DefaultSelfUpdateEndpoint)
 	if latestBuildInfo.Version > CLIBuildNumber {
-		SelfUpdate(latestBuildInfo.DownloadURL)
+		fmt.Println("Update detected! Updating...")
+		exPath, err := os.Executable()
+		if err != nil {
+			panic(err)
+		}
+		SelfUpdate(latestBuildInfo.DownloadURL, exPath)
+		fmt.Println("Update finished! Restarting!")
+		exec.Command("cmd", "/C", "start", exPath).Start()
+		os.Exit(0)
 	}
 
 	//Detect Civ folder (check flag then go to default )

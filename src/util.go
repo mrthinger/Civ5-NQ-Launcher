@@ -42,13 +42,16 @@ func GetEnv(env, backup string) string {
 }
 
 //SelfUpdate use binary located at newBinURL to replace self with
-func SelfUpdate(newBinURL string) error {
+func SelfUpdate(newBinURL, targetPath string) error {
 	resp, err := http.Get(newBinURL)
 	if err != nil {
 		return err
 	}
 	defer resp.Body.Close()
-	err = update.Apply(resp.Body, update.Options{})
+	err = update.Apply(resp.Body, update.Options{
+		TargetPath:  targetPath,
+		OldSavePath: "",
+	})
 	if err != nil {
 		return err
 	}
