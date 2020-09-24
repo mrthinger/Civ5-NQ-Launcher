@@ -44,10 +44,10 @@ func main() {
 
 //https://civ5-nq-launcher.herokuapp.com/currentLinks
 func getFileLinks(endpoint string) (mapLink, modLink string) {
-
+	return
 }
 
-func unzip(zipPath, extractToPath) {
+func unzip(zipPath, extractToPath string) {
 
 }
 
