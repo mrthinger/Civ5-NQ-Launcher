@@ -7,25 +7,17 @@ import (
 	"net/http"
 
 	"github.com/PuerkitoBio/goquery"
-	"github.com/gin-gonic/gin"
 )
 
 func main() {
 	serverPtr := flag.Bool("server", false, "Starts executable in server mode")
 	flag.Parse()
 
-	fmt.Printf("Server Mode Enabled: %v\n", *serverPtr)
+	if *serverPtr {
+		fmt.Println("Server Mode Enabled")
+		StartServer()
+	}
 
-}
-
-func server() {
-	r := gin.Default()
-	r.GET("/currentLek", func(c *gin.Context) {
-		c.JSON(200, gin.H{
-			"currentLink": "https://",
-		})
-	})
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
 }
 
 func getFile() {
