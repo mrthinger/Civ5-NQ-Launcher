@@ -11,7 +11,7 @@ const (
 //StartServer starts backend server
 func StartServer() {
 	r := gin.Default()
-	port := GetEnv("port", DefaultPort)
+	port := GetEnv("PORT", DefaultPort)
 	r.GET("/currentLek", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"currentLink": "https://",
