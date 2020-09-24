@@ -79,7 +79,7 @@ func getFile() {
 
 	// Find and print image URLs
 	document.Find("a#uc-download-link").Each(func(index int, element *goquery.Selection) {
-		href, exists := element.Attr("href")``
+		href, exists := element.Attr("href")
 		if exists {
 			link := "https://drive.google.com/u/0" + href
 			DownloadFile("zipfile.zip", link)
