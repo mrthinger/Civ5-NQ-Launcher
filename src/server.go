@@ -4,10 +4,14 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+const (
+	DefaultPort = "8080"
+)
+
 //StartServer starts backend server
 func StartServer() {
 	r := gin.Default()
-	port := GetEnv("port", "8080")
+	port := GetEnv("port", DefaultPort)
 	r.GET("/currentLek", func(c *gin.Context) {
 		c.JSON(200, gin.H{
 			"currentLink": "https://",
