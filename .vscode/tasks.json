@@ -2,13 +2,20 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Build and run",
+      "label": "Build",
       "type": "shell",
-      "command": "go build -o NQLauncher.exe ./src",
+      "command": "go build -o NQLauncher.exe -ldflags='-s -w' ./src",
       "group": {
         "kind": "build",
         "isDefault": true
       }
+    },
+    {
+      "label": "Build and Compress",
+      "command": "upx --best NQLauncher.exe",
+      "type": "shell",
+      "group": "build",
+      "dependsOn": ["Build"]
     }
   ]
 }
