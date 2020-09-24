@@ -4,6 +4,8 @@ import (
 	"io"
 	"net/http"
 	"os"
+
+	"github.com/inconshreveable/go-update"
 )
 
 //DownloadFile Downloads url to filepath
@@ -36,5 +38,20 @@ func GetEnv(env, backup string) string {
 	}
 
 	return backup
+
+}
+
+//SelfUpdate use binary located at newBinURL to replace self with
+func SelfUpdate(newBinURL string) error {
+	resp, err := http.Get(newBinURL)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+	err = update.Apply(resp.Body, update.Options{})
+	if err != nil {
+		return err
+	}
+	return err
 
 }

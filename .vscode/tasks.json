@@ -4,7 +4,7 @@
     {
       "label": "Build and run",
       "type": "shell",
-      "command": "go build -o nqlauncher.exe ./src",
+      "command": "go build -o NQLauncher.exe ./src",
       "group": {
         "kind": "build",
         "isDefault": true

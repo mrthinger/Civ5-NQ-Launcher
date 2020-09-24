@@ -23,6 +23,12 @@ func main() {
 	}
 
 	//CLI Start
+	//self update
+	latestBuildInfo := getSelfUpdateInfo(DefaultSelfUpdateEndpoint)
+	if latestBuildInfo.Version > CLIBuildNumber {
+		SelfUpdate(latestBuildInfo.DownloadURL)
+	}
+
 	//Detect Civ folder (check flag then go to default )
 
 	civBasePath := filepath.Clean(*civPathPtr)
@@ -68,16 +74,34 @@ func getFileLinks(currentLinksEndpoint string) (links CurrentLinks) {
 		panic(err.Error())
 	}
 
-	e := json.Unmarshal(body, &links)
-	if e != nil {
+	err = json.Unmarshal(body, &links)
+	if err != nil {
 		panic(err.Error())
 	}
 
 	return
 }
 
-func unzip(zipPath, extractToPath string) {
+func getSelfUpdateInfo(latestBuildEndpoint string) (latestBuild BuildInfo) {
 
+	// Make HTTP request
+	res, err := http.Get(latestBuildEndpoint)
+	if err != nil {
+		panic(err.Error())
+	}
+	defer res.Body.Close()
+
+	body, err := ioutil.ReadAll(res.Body)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	err = json.Unmarshal(body, &latestBuild)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	return
 }
 
 func deleteFiles(glob string) {
