@@ -16,7 +16,7 @@ func StartServer() {
 
 	r.GET("/currentLinks", func(c *gin.Context) {
 		c.JSON(200, CurrentLinks{
-			Mod: "https://storage.googleapis.com/civ5-mods/lek-mod/LEKMOD_V25.1.zip",
+			Mod: "example",
 			Map: "https://storage.googleapis.com/civ5-mods/lek-map/Lekmap%20v1.4.2.zip",
 		})
 	})
