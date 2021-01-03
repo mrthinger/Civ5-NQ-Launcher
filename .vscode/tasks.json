@@ -4,18 +4,12 @@
     {
       "label": "Build",
       "type": "shell",
-      "command": "go build -o NQLauncher.exe -ldflags='-s -w' ./src",
+      "command": "make",
       "group": {
         "kind": "build",
         "isDefault": true
       }
-    },
-    {
-      "label": "Build and Compress",
-      "command": "upx --best NQLauncher.exe",
-      "type": "shell",
-      "group": "build",
-      "dependsOn": ["Build"]
     }
+   
   ]
 }
