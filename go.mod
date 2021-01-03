@@ -1,7 +1,7 @@
 module github.com/mrthinger/Civ5-NQ-Launcher
 
 // +heroku goVersion go1.15
-// +heroku install github.com/mrthinger/Civ5-NQ-Launcher/server
+// +heroku install github.com/mrthinger/Civ5-NQ-Launcher/cmd/server
 go 1.15
 
 require (

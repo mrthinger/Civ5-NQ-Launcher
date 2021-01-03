@@ -1,8 +1,8 @@
-package main
+package server
 
 import (
 	"github.com/gin-gonic/gin"
-	"github.com/mrthinger/Civ5-NQ-Launcher/common"
+	"github.com/mrthinger/Civ5-NQ-Launcher/internal/common"
 )
 
 const (
