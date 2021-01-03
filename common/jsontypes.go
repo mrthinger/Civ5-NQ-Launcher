@@ -1,4 +1,4 @@
-package main
+package common
 
 //CurrentLinks response for current getting current links from server
 type CurrentLinks struct {

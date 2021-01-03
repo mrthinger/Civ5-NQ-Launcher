@@ -13,6 +13,7 @@ import (
 	"strconv"
 
 	"github.com/mholt/archiver/v3"
+	"github.com/mrthinger/Civ5-NQ-Launcher/common"
 	"golang.org/x/sys/windows/registry"
 )
 
@@ -29,27 +30,21 @@ func main() {
 		log.Fatal(err)
 	}
 
-	serverPtr := flag.Bool("server", false, "Starts executable in server mode")
 	civPathPtr := flag.String("dir", regCivPath, "Specifiy nonstandard civ folder (default is: "+regCivPath+")")
 	flag.Parse()
 
-	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(CLIBuildNumber))
-
-	if *serverPtr {
-		fmt.Println("Server Mode Enabled")
-		StartServer()
-	}
+	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
 
 	//CLI Start
 	//self update
-	latestBuildInfo := getSelfUpdateInfo(DefaultSelfUpdateEndpoint)
-	if latestBuildInfo.Version > CLIBuildNumber {
+	latestBuildInfo := getSelfUpdateInfo(common.DefaultSelfUpdateEndpoint)
+	if latestBuildInfo.Version > common.CLIBuildNumber {
 		fmt.Println("Update detected! Updating...")
 		exPath, err := os.Executable()
 		if err != nil {
 			panic(err)
 		}
-		SelfUpdate(latestBuildInfo.DownloadURL, exPath)
+		common.SelfUpdate(latestBuildInfo.DownloadURL, exPath)
 		fmt.Println("Update finished! Restarting!")
 		exec.Command("cmd", "/C", "start", exPath).Start()
 		os.Exit(0)
@@ -70,16 +65,16 @@ func main() {
 	deleteFiles(filepath.Join(civDlcPath, "[Ll][Ee][Kk]*"))
 
 	//get new file links from server (and parse them)
-	links := getFileLinks(DefaultCurrentLinksEndpoint)
+	links := getFileLinks(common.DefaultCurrentLinksEndpoint)
 
 	//download them to cache/temp folder
 	tempDir := os.TempDir()
 	tempMod := filepath.Join(tempDir, "civ5-mod.zip")
 	tempMap := filepath.Join(tempDir, "civ5-map.zip")
 	fmt.Println("Downloading: " + links.Mod)
-	DownloadFile(tempMod, links.Mod)
+	common.DownloadFile(tempMod, links.Mod)
 	fmt.Println("Downloading: " + links.Map)
-	DownloadFile(tempMap, links.Map)
+	common.DownloadFile(tempMap, links.Map)
 
 	//unzip them to civ folder
 	fmt.Println("Unzipping mod to: " + civDlcPath)
@@ -90,7 +85,7 @@ func main() {
 }
 
 //https://civ5-nq-launcher.herokuapp.com/currentLinks
-func getFileLinks(currentLinksEndpoint string) (links CurrentLinks) {
+func getFileLinks(currentLinksEndpoint string) (links common.CurrentLinks) {
 
 	// Make HTTP request
 	res, err := http.Get(currentLinksEndpoint)
@@ -112,7 +107,7 @@ func getFileLinks(currentLinksEndpoint string) (links CurrentLinks) {
 	return
 }
 
-func getSelfUpdateInfo(latestBuildEndpoint string) (latestBuild BuildInfo) {
+func getSelfUpdateInfo(latestBuildEndpoint string) (latestBuild common.BuildInfo) {
 
 	// Make HTTP request
 	res, err := http.Get(latestBuildEndpoint)
