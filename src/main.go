@@ -5,6 +5,7 @@ import (
 	"flag"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"os"
 	"os/exec"
@@ -12,11 +13,24 @@ import (
 	"strconv"
 
 	"github.com/mholt/archiver/v3"
+	"golang.org/x/sys/windows/registry"
 )
 
 func main() {
+
+	k, err := registry.OpenKey(registry.CURRENT_USER, `Software\Firaxis\Civilization5`, registry.QUERY_VALUE)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer k.Close()
+
+	regCivPath, _, err := k.GetStringValue("LastKnownPath")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	serverPtr := flag.Bool("server", false, "Starts executable in server mode")
-	civPathPtr := flag.String("dir", DefaultCivDirectory, "Specifiy nonstandard civ folder (default is: "+DefaultCivDirectory+")")
+	civPathPtr := flag.String("dir", regCivPath, "Specifiy nonstandard civ folder (default is: "+regCivPath+")")
 	flag.Parse()
 
 	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(CLIBuildNumber))

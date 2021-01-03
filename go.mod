@@ -8,4 +8,5 @@ require (
 	github.com/gin-gonic/gin v1.6.3
 	github.com/inconshreveable/go-update v0.0.0-20160112193335-8152e7eb6ccf
 	github.com/mholt/archiver/v3 v3.3.0
+	golang.org/x/sys v0.0.0-20200116001909-b77594299b42
 )
