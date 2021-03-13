@@ -16,18 +16,18 @@ import (
 //StartClient starts client code
 func StartClient() {
 
-	k, err := registry.OpenKey(registry.CURRENT_USER, `Software\Firaxis\Civilization5`, registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.CURRENT_USER, `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 8930`, registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer k.Close()
 
-	regCivPath, _, err := k.GetStringValue("LastKnownPath")
+	regCivPath, _, err := k.GetStringValue("InstallLocation")
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	civPathPtr := flag.String("dir", regCivPath, "Specifiy nonstandard civ folder (default is: "+regCivPath+")")
+	civPathPtr := flag.String("dir", regCivPath, "Specifiy nonstandard civ folder")
 	flag.Parse()
 
 	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
