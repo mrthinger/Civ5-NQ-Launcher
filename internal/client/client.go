@@ -16,7 +16,7 @@ import (
 //StartClient starts client code
 func StartClient() {
 
-	k, err := registry.OpenKey(registry.CURRENT_USER, `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 8930`, registry.QUERY_VALUE)
+	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 8930`, registry.QUERY_VALUE)
 	if err != nil {
 		log.Fatal(err)
 	}
