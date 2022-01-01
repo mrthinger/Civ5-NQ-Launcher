@@ -16,18 +16,24 @@ import (
 
 //StartClient starts client code
 func StartClient() {
+	fmt.Println("Civ5 by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
+	log.Println("Finding civ paths...")
+
 	cmdCivPath := *flag.String("dir", "", "Specifiy nonstandard civ folder")
 	flag.Parse()
 
+	log.Println("cmdCivPath:", cmdCivPath)
+
 	var regCivPath string
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 8930`, registry.QUERY_VALUE)
-	if err != nil {
+	if err == nil {
+		defer k.Close()
 		regCivPath, _, err = k.GetStringValue("InstallLocation")
 		if err != nil {
 			log.Println(err)
 		}
 	}
-	defer k.Close()
+	log.Println("regCivPath:", regCivPath)
 
 	var dialogCivPath string
 	if cmdCivPath == "" && regCivPath == "" {
@@ -36,6 +42,7 @@ func StartClient() {
 			log.Fatal(err)
 		}
 	}
+	log.Println("dialogCivPath:", dialogCivPath)
 
 	var civPath string
 	if cmdCivPath != "" {
@@ -47,8 +54,6 @@ func StartClient() {
 	} else {
 		log.Fatal("No Civ5 folder found")
 	}
-
-	fmt.Println("Civ5 by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
 
 	//Check for updates
 	common.SelfUpdate()
