@@ -10,34 +10,50 @@ import (
 
 	"github.com/mholt/archiver/v3"
 	"github.com/mrthinger/Civ5-NQ-Launcher/internal/common"
+	"github.com/sqweek/dialog"
 	"golang.org/x/sys/windows/registry"
 )
 
 //StartClient starts client code
 func StartClient() {
+	cmdCivPath := *flag.String("dir", "", "Specifiy nonstandard civ folder")
+	flag.Parse()
 
+	var regCivPath string
 	k, err := registry.OpenKey(registry.LOCAL_MACHINE, `SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\Steam App 8930`, registry.QUERY_VALUE)
 	if err != nil {
-		log.Fatal(err)
+		regCivPath, _, err = k.GetStringValue("InstallLocation")
+		if err != nil {
+			log.Println(err)
+		}
 	}
 	defer k.Close()
 
-	regCivPath, _, err := k.GetStringValue("InstallLocation")
-	if err != nil {
-		log.Fatal(err)
+	var dialogCivPath string
+	if cmdCivPath == "" && regCivPath == "" {
+		dialogCivPath, err = dialog.Directory().Title("Pick Civ5 Folder (has the exe in it)").Browse()
+		if err != nil {
+			log.Fatal(err)
+		}
 	}
 
-	civPathPtr := flag.String("dir", regCivPath, "Specifiy nonstandard civ folder")
-	flag.Parse()
+	var civPath string
+	if cmdCivPath != "" {
+		civPath = cmdCivPath
+	} else if regCivPath != "" {
+		civPath = regCivPath
+	} else if dialogCivPath != "" {
+		civPath = dialogCivPath
+	} else {
+		log.Fatal("No Civ5 folder found")
+	}
 
-	fmt.Println("NQLauncher by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
+	fmt.Println("Civ5 by MrThinger - Version: " + strconv.Itoa(common.CLIBuildNumber))
 
 	//Check for updates
 	common.SelfUpdate()
 
-	//Detect Civ folder (check flag then go to default )
-
-	civBasePath := filepath.Clean(*civPathPtr)
+	civBasePath := filepath.Clean(civPath)
 	civDlcPath := filepath.Join(civBasePath, "Assets", "DLC")
 	civMapsPath := filepath.Join(civBasePath, "Assets", "Maps")
 
@@ -67,4 +83,6 @@ func StartClient() {
 	fmt.Println("Unzipping map to: " + civMapsPath)
 	archiver.Unarchive(tempMap, civMapsPath)
 
+	log.Println("Success! Press Enter to exit...")
+	fmt.Scanln()
 }
